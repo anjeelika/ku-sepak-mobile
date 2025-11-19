@@ -1,54 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:ku_sepak/screens/menu.dart';
-import 'package:ku_sepak/screens/productlist_form.dart';
+import 'package:ku_sepak/models/product.dart';
 
-class ItemCard extends StatelessWidget {
-  // Menampilkan kartu dengan ikon dan nama.
-  final ItemHomepage item; 
-  const ItemCard(this.item, {super.key}); 
+class ProductCard extends StatelessWidget {
+  final Product p;
+  final VoidCallback onTap;
+
+  const ProductCard({
+    super.key,
+    required this.p,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      // Menentukan warna latar belakang dari tema aplikasi.
-      color: item.color,
-      // Membuat sudut kartu melengkung.
-      borderRadius: BorderRadius.circular(12),
-
+    final product = p.fields;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: InkWell(
-        // Aksi ketika kartu ditekan.
-        onTap: () {
-          // Memunculkan SnackBar ketika diklik
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
-
-          // Navigate ke route yang sesuai (tergantung jenis tombol)
-          if (item.name == "Create Product") {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ProductFormPage()));
-          }
-        },
-        // Container untuk menyimpan Icon dan Text
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
+        onTap: onTap,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
-              // Menyusun ikon dan teks di tengah kartu.
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
+                // Thumbnail (kalau ada)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    'http://localhost:8000/proxy-image/?url=${Uri.encodeComponent(product.thumbnail)}',
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 150,
+                      color: Colors.grey[300],
+                      child: const Center(child: Icon(Icons.broken_image)),
+                    ),
+                  ),
                 ),
-                const Padding(padding: EdgeInsets.all(3)),
+                const SizedBox(height: 8),
+
+                // Name
                 Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  product.name,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                const SizedBox(height: 6),
+
+                // Category & Stock
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Category: ${product.category}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    Text(
+                      'Stock: ${product.stock}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+
+                // Price
+                Text(
+                  'Rp ${product.price}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.indigo,
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // Description preview
+                Text(
+                  product.description.length > 100
+                      ? '${product.description.substring(0, 100)}...'
+                      : product.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 6),
+
+                // Featured badge
+                if (product.isFeatured == true)
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Chip(
+                      label: Text(
+                        'Featured',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: Colors.amber,
+                    ),
+                  ),
               ],
             ),
           ),

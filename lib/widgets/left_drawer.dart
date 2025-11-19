@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ku_sepak/screens/menu.dart';
 import 'package:ku_sepak/screens/productlist_form.dart';
+import 'package:ku_sepak/screens/product_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -51,9 +52,9 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.post_add),
-            title: const Text('Add News'),
-            // Redirect to NewsFormPage
+            leading: const Icon(Icons.add_outlined),
+            title: const Text('Create Product'),
+            // Redirect to ProductFormPage
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -62,7 +63,18 @@ class LeftDrawer extends StatelessWidget {
                 ),
               );
             },
-          )
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_reaction_rounded),
+            title: const Text('Product List'),
+            onTap: () {
+                // Route to product list page
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProductListPage()),
+                );
+            },
+          ),
         ],
       ),
     );

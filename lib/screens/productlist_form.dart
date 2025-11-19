@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ku_sepak/widgets/left_drawer.dart';
-
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
 
@@ -29,6 +30,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -291,7 +293,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                     Text('Category: $_category'),
                                     Text('Thumbnail: $_thumbnail'),
                                     Text(
-                                      'Unggulan: ${_isFeatured ? "Yes" : "No"}',
+                                      'Featured: ${_isFeatured ? "Yes" : "No"}',
                                     ),
                                   ],
                                 ),
